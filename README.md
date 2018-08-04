@@ -64,9 +64,5 @@ You can optionally set the representation character (in case you don't want to u
 |`setKeepMaskHint`| *boolean* | set to keep the input hint while the edit text is active
 |`setKeepFloatingText`| *boolean* | set to keep the floating hint text while the edit text is inactive
 |`setMaxLength`| *int* | set a max number of characters on the edit text
-|`setAllowedCharacters`| *String* | set the characters that are allowed to be used in the edit text ex. "0123456789"
-|`getAllowedCharacters`| *String* | get the allowed characters
-|`setDeniedCharacters`| *String* | set the characters that are **NOT** allowed to be used in the edit text ex. "0123456789"
-|`getDeniedCharacters`| *String* | get the denied characters
 |`setInputType`| *String* | set the input type on the edit text
 	
