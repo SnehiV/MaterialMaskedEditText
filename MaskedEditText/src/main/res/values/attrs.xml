@@ -7,4 +7,15 @@
 		<attr name="char_representation" format="string" />
 		<attr name="keep_hint" format="boolean" />
 	</declare-styleable>
+	<declare-styleable name="MaterialMaskedEditText">
+		<attr name="android:textColorHint" />
+		<attr name="android:hint" />
+		<attr name="android:typeface"/>
+		<attr name="android:inputType"/>
+		<attr name="android:textColor"/>
+		<attr name="android:fontFamily"/>
+		<attr name="mask_hint" format="string" />
+		<attr name="keep_mask_hint" format="boolean" />
+		<attr name="keep_floating_hint" format="boolean" />
+	</declare-styleable>
 </resources>

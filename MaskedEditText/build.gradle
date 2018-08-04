@@ -1,129 +1,166 @@
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 
-String projectVersion = "1.0.5"
-String projectGroup = "ru.egslava"
+ext {
+    bintrayRepo = 'Material-Masked-Edit-Text'
+    bintrayName = 'com.snehiv.material-masked-edit-text'
 
-version = projectVersion
-group = projectGroup
+    publishedGroupId = 'com.snehiv.material-masked-edit-text'
+    libraryName = 'material-masked-edit-text'
+    artifact = 'material-masked-edit-text'
+
+    libraryDescription = 'Android edit text with masking features and material design'
+
+    siteUrl = 'https://github.com/SnehiV/MaterialMaskedEditText'
+    gitUrl = 'https://github.com/SnehiV/MaterialMaskedEditText.git'
+
+    libraryVersion = '0.0.1'
+
+    developerId = 'snehiv'
+    developerName = 'Snehi Vallurupalli'
+    developerEmail = 'snehithecreator@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+
 
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
-        versionName projectVersion
+        versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
 }
 
 dependencies {
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.2.0'
-
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:25.1.1'
+    implementation 'com.android.support:design:25.3.1'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
+if (project.rootProject.file('local.properties').exists()) {
+    apply plugin: 'com.github.dcendents.android-maven'
 
-// bintray deploy ....
-String projectName = "edittext-mask"
-String projectDescription = GFileUtils.readFile(new File("README.md"))
-String webUrl = "https://github.com/egslava/edittext-mask"
-String gitUrl = "https://github.com/egslava/edittext-mask.git"
+    group = publishedGroupId                               // Maven Group ID for the artifact
 
+    install {
+        repositories.mavenInstaller {
+            // This generates POM.xml with proper parameters
+            pom {
+                project {
+                    packaging 'aar'
+                    groupId publishedGroupId
+                    artifactId artifact
 
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
-                
-                name projectName
-                description projectDescription
-                url webUrl
+                    // Add your description here
+                    name libraryName
+                    description libraryDescription
+                    url siteUrl
 
-                inceptionYear '2017' // HARDCODED
-
-                licenses {
-                    license {
-                        name 'MIT'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                    // Set your license
+                    licenses {
+                        license {
+                            name licenseName
+                            url licenseUrl
+                        }
                     }
-                }
+                    developers {
+                        developer {
+                            id developerId
+                            name developerName
+                            email developerEmail
+                        }
+                    }
+                    scm {
+                        connection gitUrl
+                        developerConnection gitUrl
+                        url siteUrl
 
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url webUrl
-                }
-                developers {
-                    developer {
-                        id 'egslava'
-                        name 'Slava Egorenkov'
-                        email 'egslava@gmail.com'
                     }
                 }
             }
         }
     }
-}
 
-// The end of the gradle file is for JCenter publication.
-// The original code was written with look at Alexander Matveychuk's code
-// and
-// https://www.virag.si/2015/01/publishing-gradle-android-library-to-jcenter/
+    apply plugin: 'com.jfrog.bintray'
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
+    version = libraryVersion
 
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
+    if (project.hasProperty("android")) { // Android libraries
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from android.sourceSets.main.java.srcDirs
+        }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
+        task javadoc(type: Javadoc) {
+            source = android.sourceSets.main.java.srcDirs
+            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        }
+    } else { // Java libraries
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+    }
 
-bintray {
-    user = bintrayUser
-    key = bintrayApikey
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
 
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = projectName
-        userOrg = user
-//        projectUrl = webUrl
-        vcsUrl = gitUrl
-        licenses = ["MIT"]
-        group = projectGroup
-        publish = true
+    artifacts {
+        archives javadocJar
+        archives sourcesJar
+    }
 
-        version {
-            name = projectVersion
-//            desc = projectDescription
-            vcsTag = projectVersion
+// Bintray
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintray.apikey")
+
+        configurations = ['archives']
+        pkg {
+            repo = bintrayRepo
+            name = bintrayName
+            desc = libraryDescription
+            websiteUrl = siteUrl
+            vcsUrl = gitUrl
+            licenses = allLicenses
+            publish = true
+            publicDownloadNumbers = true
+            version {
+                desc = libraryDescription
+                gpg {
+                    sign = true //Determines whether to GPG sign the files. The default is false
+                    passphrase = properties.getProperty("bintray.gpg.password")
+                    //Optional. The passphrase for GPG signing'
+                }
+            }
         }
     }
 }
