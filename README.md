@@ -8,6 +8,12 @@ layout in a more user friendly way.
 ![Alt text](READMEdemo.gif)
 
 ## Usage
+Add this to your build.gradle
+
+`implementation 'com.snehiv.material-masked-edit-text:material-masked-edit-text:0.0.1'`
+
+Or download project and plug it in as a library.
+
 Add _xmlns:mask="http://schemas.android.com/apk/res-auto"_ to your layout xml root:
 
     <com.snehi.materialmaskededittext.MaterialMaskedEditText
